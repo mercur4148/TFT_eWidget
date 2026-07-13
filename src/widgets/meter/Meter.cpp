@@ -226,21 +226,21 @@ void MeterWidget::drawMeterFace(uint16_t x, uint16_t y, float startScale, float 
         // Calculate label positions
         x0 = x + sx * (100 + tick_length + 10) + 120;
         y0 = y + sy * (100 + tick_length + 10) + 140;
-        switch (i / (long_ticks_interval / divisor))
+        switch (i)
         {
-        case -2:
+        case -50:
           ntft->drawCentreString(ms0, x0, y0 - 12, 2);
           break;
-        case -1:
+        case -25:
           ntft->drawCentreString(ms1, x0, y0 - 9, 2);
           break;
         case 0:
           ntft->drawCentreString(ms2, x0, y0 - 6, 2);
           break;
-        case 1:
+        case 25:
           ntft->drawCentreString(ms3, x0, y0 - 9, 2);
           break;
-        case 2:
+        case 50:
           ntft->drawCentreString(ms4, x0, y0 - 12, 2);
           break;
         }
@@ -248,6 +248,33 @@ void MeterWidget::drawMeterFace(uint16_t x, uint16_t y, float startScale, float 
     }
     else
     {
+      if (abs(i) % long_ticks_interval - offset == 0)
+      {
+        // Calculate label positions
+        x0 = x + sx * (100 + tick_length + 10) + 120;
+        y0 = y + sy * (100 + tick_length + 10) + 140;
+        switch (i)
+        {
+        case -50:
+          ntft->drawCentreString(ms0, x0, y0 - 12, 2);
+          break;
+        case -30:
+          ntft->drawCentreString(ms1, x0, y0 - 9, 2);
+          break;
+        case -10:
+          ntft->drawCentreString(ms2, x0, y0 - 6, 2);
+          break;
+        case 10:
+          ntft->drawCentreString(ms3, x0, y0 - 6, 2);
+          break;
+        case 30:
+          ntft->drawCentreString(ms4, x0, y0 - 9, 2);
+          break;
+        case 50:
+          ntft->drawCentreString(ms5, x0, y0 - 12, 2);
+          break;
+        }
+      }
     }
 
     // Now draw the arc of the scale
