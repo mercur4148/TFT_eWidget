@@ -120,11 +120,7 @@ class MeterWidget
 	uint8_t _long_tick_length;
 	uint8_t _short_tick_length;
 	
-	bool _use_60_deg;
-	float obx, oby;
-	
 	void drawMeterFace(uint16_t x, uint16_t y, float startScale, float endScale, const char *units);
-    void drawLabelByIndex(int index, int x, int y);
 };
 
 #endif
