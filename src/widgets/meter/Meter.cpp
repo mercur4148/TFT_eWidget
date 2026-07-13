@@ -78,7 +78,6 @@ void MeterWidget::analogMeter(uint16_t x, uint16_t y, float fullScale, const cha
 {
   analogMeter(x, y, 0.0, fullScale, units, s0, s1, s2, s3, s4);
 }
-
 void MeterWidget::analogMeter(uint16_t x, uint16_t y, float startScale, float endScale, const char *units, const char *s0, const char *s1, const char *s2, const char *s3, const char *s4)
 {
   _num_points = 5;
@@ -87,6 +86,22 @@ void MeterWidget::analogMeter(uint16_t x, uint16_t y, float startScale, float en
   strncpy(ms2, s2, 4);
   strncpy(ms3, s3, 4);
   strncpy(ms4, s4, 4);
+  drawMeterFace(x, y, startScale, endScale, units);
+}
+// 6 points meter
+void MeterWidget::analogMeter(uint16_t x, uint16_t y, float fullScale, const char *units, const char *s0, const char *s1, const char *s2, const char *s3, const char *s4, const char *s5)
+{
+  analogMeter(x, y, 0.0, fullScale, units, s0, s1, s2, s3, s4, s5);
+}
+void MeterWidget::analogMeter(uint16_t x, uint16_t y, float startScale, float endScale, const char *units, const char *s0, const char *s1, const char *s2, const char *s3, const char *s4, const char *s5)
+{
+  _num_points = 6;
+  strncpy(ms0, s0, 4);
+  strncpy(ms1, s1, 4);
+  strncpy(ms2, s2, 4);
+  strncpy(ms3, s3, 4);
+  strncpy(ms4, s4, 4);
+  strncpy(ms5, s5, 4);
   drawMeterFace(x, y, startScale, endScale, units);
 }
 
@@ -112,21 +127,21 @@ void MeterWidget::drawMeterFace(uint16_t x, uint16_t y, float startScale, float 
   for (int8_t i = -(_full_swing_angle / 2); i <= (_full_swing_angle / 2) + 1; i += 5)
   {
     // Long scale tick length
-    int8_t tl = _long_tick_length;
+    int8_t tick_length = _long_tick_length;
 
     // Coordinates of tick to draw
     float sx = cos((i - 90) * 0.0174532925);
     float sy = sin((i - 90) * 0.0174532925);
-    uint16_t x0 = x + sx * (100 + tl) + 120;
-    uint16_t y0 = y + sy * (100 + tl) + 140;
+    uint16_t x0 = x + sx * (100 + tick_length) + 120;
+    uint16_t y0 = y + sy * (100 + tick_length) + 140;
     uint16_t x1 = x + sx * 100 + 120;
     uint16_t y1 = y + sy * 100 + 140;
 
     // Coordinates of next tick for zone fill
     float sx2 = cos((i + 5 - 90) * 0.0174532925);
     float sy2 = sin((i + 5 - 90) * 0.0174532925);
-    int x2 = x + sx2 * (100 + tl) + 120;
-    int y2 = y + sy2 * (100 + tl) + 140;
+    int x2 = x + sx2 * (100 + tick_length) + 120;
+    int y2 = y + sy2 * (100 + tick_length) + 140;
     int x3 = x + sx2 * 100 + 120;
     int y3 = y + sy2 * 100 + 140;
 
@@ -171,14 +186,31 @@ void MeterWidget::drawMeterFace(uint16_t x, uint16_t y, float startScale, float 
     }
 
     // Short scale tick length
-    if (i % (_full_swing_angle / 4) != 0)
-      tl = _short_tick_length;
+    uint8_t long_ticks_interval = 0;
+    uint8_t offset = 0;
+    uint8_t divisor = 1;
+
+    if (_num_points == 5)
+      long_ticks_interval = (_full_swing_angle / 4);
+    else if (_num_points == 3)
+    {
+      long_ticks_interval = (_full_swing_angle / 2);
+      divisor = 2;
+    }
+    else if (_num_points == 6)
+    {
+      long_ticks_interval = (_full_swing_angle / 5);
+      offset = 10;
+    }
+
+    if (abs(i) % long_ticks_interval - offset != 0)
+      tick_length = _short_tick_length;
 
     // Recalculate coords in case tick length changed
-    if (tl > 0) // draw short ticks only if length is more than 0
+    if (tick_length > 0) // draw short ticks only if length is more than 0
     {
-      x0 = x + sx * (100 + tl) + 120;
-      y0 = y + sy * (100 + tl) + 140;
+      x0 = x + sx * (100 + tick_length) + 120;
+      y0 = y + sy * (100 + tick_length) + 140;
       x1 = x + sx * 100 + 120;
       y1 = y + sy * 100 + 140;
 
@@ -187,29 +219,35 @@ void MeterWidget::drawMeterFace(uint16_t x, uint16_t y, float startScale, float 
     }
 
     // Check if labels should be drawn, with position tweaks
-    if (i % (_full_swing_angle / 4) == 0)
+    if (_num_points != 6)
     {
-      // Calculate label positions
-      x0 = x + sx * (100 + tl + 10) + 120;
-      y0 = y + sy * (100 + tl + 10) + 140;
-      switch (i / (_full_swing_angle / 4))
+      if (i % (long_ticks_interval / divisor) == 0)
       {
-      case -2:
-        ntft->drawCentreString(ms0, x0, y0 - 12, 2);
-        break;
-      case -1:
-        ntft->drawCentreString(ms1, x0, y0 - 9, 2);
-        break;
-      case 0:
-        ntft->drawCentreString(ms2, x0, y0 - 6, 2);
-        break;
-      case 1:
-        ntft->drawCentreString(ms3, x0, y0 - 9, 2);
-        break;
-      case 2:
-        ntft->drawCentreString(ms4, x0, y0 - 12, 2);
-        break;
+        // Calculate label positions
+        x0 = x + sx * (100 + tick_length + 10) + 120;
+        y0 = y + sy * (100 + tick_length + 10) + 140;
+        switch (i / (long_ticks_interval / divisor))
+        {
+        case -2:
+          ntft->drawCentreString(ms0, x0, y0 - 12, 2);
+          break;
+        case -1:
+          ntft->drawCentreString(ms1, x0, y0 - 9, 2);
+          break;
+        case 0:
+          ntft->drawCentreString(ms2, x0, y0 - 6, 2);
+          break;
+        case 1:
+          ntft->drawCentreString(ms3, x0, y0 - 9, 2);
+          break;
+        case 2:
+          ntft->drawCentreString(ms4, x0, y0 - 12, 2);
+          break;
+        }
       }
+    }
+    else
+    {
     }
 
     // Now draw the arc of the scale
