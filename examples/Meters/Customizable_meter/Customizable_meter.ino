@@ -14,12 +14,12 @@
   https://github.com/Bodmer/TFT_eWidget
 */
 
-#include <TFT_eSPI.h>     // Hardware-specific library
-#include <TFT_eWidget.h>  // Widget library
+#include <TFT_eSPI.h>    // Hardware-specific library
+#include <TFT_eWidget.h> // Widget library
 
-TFT_eSPI tft  = TFT_eSPI();      // Invoke custom library
+TFT_eSPI tft = TFT_eSPI(); // Invoke custom library
 
-MeterWidget   meter  = MeterWidget(&tft);
+MeterWidget meter = MeterWidget(&tft);
 
 #define LOOP_PERIOD 35 // Display updates every 35 ms
 
@@ -28,30 +28,40 @@ void setup(void)
   tft.init();
   tft.setRotation(1);
 
-  /*
-    tft.fillScreen(TFT_BLACK);
-    meter.setColors(TFT_BLACK, TFT_SILVER, 0xFBC0);
-  */
-  
-  tft.fillScreen(0xFBC0);
-  meter.setColors(0xFBC0, TFT_BLACK, TFT_BLACK);
+  tft.fillScreen(TFT_BLACK);
+  meter.setColors(TFT_BLACK, TFT_DARKGREEN, 0xFBC0); // FACE-MARKS-NEEDLE
 
-  meter.drawArc(false);
-  meter.drawOutline(1);
+  meter.drawArc(1);
+  meter.drawOutline(0);
   meter.drawDigitalValue(true, 1);
   meter.setLongTick(15);
-  meter.setShortTick(5);
+  meter.setShortTick(8);
   meter.drawThickerNeedle(1);
 
-  // meter.setZones(80, 100, 0, 0, 0, 0, 20, 80);   // RED, ORANGE, YELLOW, GREEN
+  /*
+  meter.setSmallLabel(true, "DIESEL");
+  meter.setZones(0, 15, 0, 0, 0, 0, 0, 0); // RED, ORANGE, YELLOW, GREEN
+  meter.analogMeter(0, 0, 100, "FUEL", "0", "1/2", "F"); // 3-points meter (new)
+  */
 
-  meter.setSmallLabel(true, "100 deg");
-  // meter.analogMeter(0, 0, 100, "deg", "0", "25", "50", "75", "100");
+ /*
+ meter.setSmallLabel(true, "READY");
+ meter.setZones(0, 25, 0, 0, 25, 45, 45, 100); // RED, ORANGE, YELLOW, GREEN
+ meter.analogMeter(0, 0, 100, "%", "0", "25", "50", "75", "100"); // 5-points meter (legacy)
+ */
 
-  meter.analogMeter(0, 0, 100, "deg", "0", "50", "100");
-  // meter.analogMeter(0, 60, 0, 25, "min", "0", "5", "10", "15", "20", "25");
+/*
+meter.setSmallLabel(true, "CHARGE");
+meter.setZones(80, 100, 0, 0, 0, 0, 0, 0); // RED, ORANGE, YELLOW, GREEN
+meter.analogMeter(0, 0, 100, "A", "0", "0.2", "0.4", "0.6", "0.8", "1.0"); // 6-points meter (new)
+*/
+
+/*
+*/
+meter.setSmallLabel(true, "BREAK");
+// meter.setZones(0, 0, 0, 0, 0, 7, 0, 0); // RED, ORANGE, YELLOW, GREEN
+meter.analogMeter(0, 0, 100, "minutes", "0", "5", "10", "15"); // 4-points meter (new)
 }
-
 
 void loop()
 {
@@ -62,13 +72,15 @@ void loop()
   {
     updateTime = millis();
 
-    d += 4; if (d > 360) d = 0;
+    d += 4;
+    if (d > 360)
+      d = 0;
 
     // Create a Sine wave for testing, value is in range 0 - 100
     float value = 50.0 + 50.0 * sin((d + 0) * 0.0174532925);
 
     float current;
-    current = mapValue(value, (float)0.0, (float)100.0, (float) -10, (float)110);
+    current = mapValue(value, (float)0.0, (float)100.0, (float)-10, (float)110);
 
     meter.updateNeedle(current, 0);
   }
