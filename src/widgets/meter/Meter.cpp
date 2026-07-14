@@ -323,8 +323,8 @@ void MeterWidget::drawMeterFace(uint16_t x, uint16_t y, float startScale, float 
       uint16_t y1 = y + sy * 100 + 140;
 
       // Coordinates of next tick for zone fill
-      float sx2 = cos((i + 5 - 90) * 0.0174532925);
-      float sy2 = sin((i + 5 - 90) * 0.0174532925);
+      float sx2 = cos((i + 1 - 90) * 0.0174532925);
+      float sy2 = sin((i + 1 - 90) * 0.0174532925);
       int x2 = x + sx2 * (100 + tick_length) + 120;
       int y2 = y + sy2 * (100 + tick_length) + 140;
       int x3 = x + sx2 * 100 + 120;
