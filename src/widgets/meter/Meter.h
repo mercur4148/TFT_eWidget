@@ -44,8 +44,10 @@ class MeterWidget
 	void drawOutline(bool draw_outline);
 	// Ditto, but with outline (wide line) and bezel (1 px) colours; default: drawOutline(true, TFT_GREY, TFT_BLACK);
 	void drawOutline(bool draw_outline, uint32_t outline_col, uint32_t bezel_col);
-	// Enable or disable digital value in the lower left corner and adjust precision (can be set to 0 if you don't want fractions) default: drawDigitalValue(true, 1);
+	// Enable or disable digital value in the lower left corner and adjust precision (can be set to 0 if you don't want fractions); default: drawDigitalValue(true, 1);
 	void drawDigitalValue(bool draw_digital, uint8_t precision);
+	// Enable or disable digital value in the lower left corner; default: drawDigitalValue(true);
+	void drawDigitalValue(bool draw_digital);
 	// Enable or disable arc drawing; default: drawArc(true);
 	void drawArc(bool draw_arc);
 	// Set "long tick" length; default: setLongTick(15);

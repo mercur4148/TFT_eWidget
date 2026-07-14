@@ -479,7 +479,8 @@ void MeterWidget::updateNeedle(float val, uint32_t ms_delay)
     float tx = tan((sdeg + 90) * 0.0174532925);
 
     // Erase old needle image
-    for (int i = -2; i <= 2; i++)
+    int8_t thickness = _draw_thicker_needle ? 2 : 1;
+    for (int8_t i = -thickness; i <= thickness; i++)
     {
       ntft->drawLine(mx + 120 + 20 * ltx + i, my + 140 - 20, mx + osx + i, my + osy, _background_color);
     }
@@ -495,18 +496,17 @@ void MeterWidget::updateNeedle(float val, uint32_t ms_delay)
 
     // Draw the needle in the new position
     // draws 3 or 5 lines lines to thicken the needle
-    int8_t thickness = _draw_thicker_needle ? 2 : 1;
     for (int8_t i = -thickness; i <= thickness; i++)
     {
       ntft->drawLine(mx + 120 + 20 * ltx + i, my + 140 - 20, mx + osx + i, my + osy, _needle_color);
     }
 
     // Slow needle down slightly as it approaches new position
-    if (abs(old_analog - value) < 10)
-      ms_delay += ms_delay / 5;
+    // if (abs(old_analog - value) < 10)
+    //   ms_delay += ms_delay / 5;
 
     // Wait before next update
-    delay(ms_delay);
+    // delay(ms_delay);
   }
 }
 
@@ -535,15 +535,20 @@ void MeterWidget::setColors(uint32_t bg_col, uint32_t text_col, uint32_t needle_
 }
 void MeterWidget::drawOutline(bool draw_outline)
 {
-  _draw_outline = draw_outline;
+  _draw_bezel = _draw_outline = draw_outline;
   _outline_color = TFT_GREY;
   _bezel_color = TFT_BLACK;
 }
 void MeterWidget::drawOutline(bool draw_outline, uint32_t outline_col, uint32_t bezel_col)
 {
-  _draw_outline = draw_outline;
+  _draw_bezel = _draw_outline = draw_outline;
   _outline_color = outline_col;
   _bezel_color = bezel_col;
+}
+void MeterWidget::drawDigitalValue(bool draw_digital)
+{
+  _draw_digital = draw_digital;
+  _digital_precision = 1;
 }
 void MeterWidget::drawDigitalValue(bool draw_digital, uint8_t precision)
 {

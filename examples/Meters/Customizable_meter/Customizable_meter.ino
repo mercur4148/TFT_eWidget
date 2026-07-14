@@ -26,41 +26,45 @@ MeterWidget meter = MeterWidget(&tft);
 void setup(void)
 {
   tft.init();
-  tft.setRotation(1);
-
+  tft.setRotation(1); // adjust rotation for your screen
+  
+  // uncomment one of these meters
+  /*
+   */
   tft.fillScreen(TFT_BLACK);
   meter.setColors(TFT_BLACK, TFT_DARKGREEN, 0xFBC0); // FACE-MARKS-NEEDLE
-
-  meter.drawArc(1);
   meter.drawOutline(0);
-  meter.drawDigitalValue(true, 1);
-  meter.setLongTick(15);
-  meter.setShortTick(8);
-  meter.drawThickerNeedle(1);
-
-  /*
+  meter.setLongTick(20);
+  meter.setShortTick(2);
   meter.setSmallLabel(true, "DIESEL");
   meter.setZones(0, 15, 0, 0, 0, 0, 0, 0); // RED, ORANGE, YELLOW, GREEN
+  meter.drawThickerNeedle(1);
   meter.analogMeter(0, 0, 100, "FUEL", "0", "1/2", "F"); // 3-points meter (new)
+
+  /*
+  meter.setSmallLabel(true, "READY");
+  meter.setZones(0, 25, 0, 0, 25, 45, 45, 100); // RED, ORANGE, YELLOW, GREEN
+  meter.analogMeter(0, 0, 100, "%", "0", "25", "50", "75", "100"); // 5-points meter (legacy)
   */
 
- /*
- meter.setSmallLabel(true, "READY");
- meter.setZones(0, 25, 0, 0, 25, 45, 45, 100); // RED, ORANGE, YELLOW, GREEN
- meter.analogMeter(0, 0, 100, "%", "0", "25", "50", "75", "100"); // 5-points meter (legacy)
- */
+  /*
+  tft.fillScreen(0xFBC0);
+  meter.setColors(0xFBC0, TFT_BLACK, TFT_BLACK); // FACE-MARKS-NEEDLE
+  meter.drawOutline(1, 0xFBC0, TFT_BLACK);
+  meter.drawDigitalValue(true, 2);
+  meter.setSmallLabel(true, "CHARGE");
+  meter.setZones(80, 100, 0, 0, 0, 0, 0, 0);                                 // RED, ORANGE, YELLOW, GREEN
+  meter.analogMeter(0, 0, 100, "A", "0", "0.2", "0.4", "0.6", "0.8", "1.0"); // 6-points meter (new)
+  */
 
-/*
-meter.setSmallLabel(true, "CHARGE");
-meter.setZones(80, 100, 0, 0, 0, 0, 0, 0); // RED, ORANGE, YELLOW, GREEN
-meter.analogMeter(0, 0, 100, "A", "0", "0.2", "0.4", "0.6", "0.8", "1.0"); // 6-points meter (new)
-*/
-
-/*
-*/
-meter.setSmallLabel(true, "BREAK");
-// meter.setZones(0, 0, 0, 0, 0, 7, 0, 0); // RED, ORANGE, YELLOW, GREEN
-meter.analogMeter(0, 0, 100, "minutes", "0", "5", "10", "15"); // 4-points meter (new)
+  /*
+  tft.fillScreen(TFT_NAVY);
+  meter.setColors(TFT_NAVY, TFT_SILVER, TFT_SILVER); // FACE-MARKS-NEEDLE
+  meter.drawDigitalValue(0, 1);
+  meter.drawArc(0);
+  meter.setSmallLabel(true, "BREAK");
+  meter.analogMeter(0, 0, 100, "minutes", "0", "5", "10", "15"); // 4-points meter (new)
+  */
 }
 
 void loop()
@@ -72,7 +76,7 @@ void loop()
   {
     updateTime = millis();
 
-    d += 4;
+    d += 2;
     if (d > 360)
       d = 0;
 
