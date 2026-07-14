@@ -27,10 +27,9 @@ void setup(void)
 {
   tft.init();
   tft.setRotation(1); // adjust rotation for your screen
-  
+
   // uncomment one of these meters
   /*
-   */
   tft.fillScreen(TFT_BLACK);
   meter.setColors(TFT_BLACK, TFT_DARKGREEN, 0xFBC0); // FACE-MARKS-NEEDLE
   meter.drawOutline(0);
@@ -40,12 +39,14 @@ void setup(void)
   meter.setZones(0, 15, 0, 0, 0, 0, 0, 0); // RED, ORANGE, YELLOW, GREEN
   meter.drawThickerNeedle(1);
   meter.analogMeter(0, 0, 100, "FUEL", "0", "1/2", "F"); // 3-points meter (new)
+  */
 
   /*
+   */
+  tft.fillScreen(TFT_WHITE);
   meter.setSmallLabel(true, "READY");
-  meter.setZones(0, 25, 0, 0, 25, 45, 45, 100); // RED, ORANGE, YELLOW, GREEN
+  meter.setZones(0, 25, 25, 50, 50, 75, 75, 100);                    // RED, ORANGE, YELLOW, GREEN
   meter.analogMeter(0, 0, 100, "%", "0", "25", "50", "75", "100"); // 5-points meter (legacy)
-  */
 
   /*
   tft.fillScreen(0xFBC0);
